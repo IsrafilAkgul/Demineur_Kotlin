@@ -1,5 +1,8 @@
+import javax.swing.Spring.height
+import kotlin.collections.listOf
+
 data class Board(
-    // The number of lines on the grid.
+    // The number of row on the grid.
     var height: Int = 8,
 
     // The number of column on the grid.
@@ -14,65 +17,36 @@ data class Board(
 
     // The number of bomb that will be on the board.
     var numberBombs: Int = 0
-)
+) {
 
 
-// The Board's equals function and hashcode function
-{
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+    // The Getters
 
-        other as Board
-
-        if (height != other.height) return false
-        if (width != other.width) return false
-        if (isCleared != other.isCleared) return false
-        if (numberBombs != other.numberBombs) return false
-        if (!grid.contentDeepEquals(other.grid)) return false
-
-        return true
+    fun getCell(row: Int, col: Int): Cell {
+        return grid[row][col]
     }
 
-    override fun hashCode(): Int {
-        var result = height
-        result = 31 * result + width
-        result = 31 * result + isCleared.hashCode()
-        result = 31 * result + numberBombs
-        result = 31 * result + grid.contentDeepHashCode()
-        return result
+
+    fun getNeighbors(row: Int, col: Int): MutableList<Pair<Int, Int>> {
+        // The list of neighbours of grid[row][col]
+        var neighbours: MutableList<Pair<Int, Int>> = mutableListOf()
+
+        for(rowLoop in -1..1) {
+            for(colLoop in -1..1) {
+                // Central cell
+                if (rowLoop == 0 && colLoop == 0) {
+                    continue
+                }
+
+                val newRow = row + rowLoop
+                val newCol = col + colLoop
+
+                if (newRow in 0..<height && newCol in 0..<width) {
+                    neighbours.add(Pair(newRow, newCol))
+                }
+            }
+        }
+
+        return neighbours
     }
-}
-
-
-// The Getters
-fun getHeight(board: Board): Int {
-    return board.height
-}
-
-fun getWidth(board: Board): Int {
-    return board.width
-}
-
-fun getCell(board: Board, row: Int, col: Int): Cell {
-    return board.grid[row][col]
-}
-
-fun getNumberBombs(board: Board): Int {
-    return board.numberBombs
-}
-
-
-// The Setters
-
-fun setHeight(board: Board, height: Int) {
-    board.height = height
-}
-
-fun setWidth(board: Board, width: Int) {
-    board.width = width
-}
-
-fun setNumberBomb(board: Board, number: Int) {
-    board.numberBombs = number
 }
